@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vehicle.car.model.Car;
-import com.vehicle.car.util.CarProcessor;
 
 @Service
 public class MyOwnAutoShop {

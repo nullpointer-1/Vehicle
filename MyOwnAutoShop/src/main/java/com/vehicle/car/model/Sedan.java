@@ -12,8 +12,6 @@ private int year;
 private double manufacturerDiscount;
 private boolean hasSunroof;
 
-
-
 // public Sedan(int year, double manufacturerDiscount, boolean hasSunroof) {
 //     this.year = year;
 //     this.manufacturerDiscount = manufacturerDiscount;

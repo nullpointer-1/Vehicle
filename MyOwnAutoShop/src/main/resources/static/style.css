@@ -1,0 +1,66 @@
+body {
+    font-family: Arial, sans-serif;
+     margin: 0;
+     padding: 0;
+     background-color: #121212;
+     color: #ffffff;
+     scroll-behavior: smooth;
+ }
+ 
+ html{
+     scroll-behavior: smooth;
+     margin:5%;
+ }
+
+ h1 {
+    text-align: center;
+    font-size: 2rem;
+    color: cyan;
+    margin: 4%;
+}
+
+.row {
+    background: #303030;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 2%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.row:hover{
+    transform: translateY(-5px);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.784);
+}
+
+button {
+    background: cyan;
+    color: rgba(4, 0, 0, 0.681);
+    font-size: 1.1rem;
+    font-weight: bold;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+button:hover {
+    background: #00cccc;
+    transform: scale(1.05);
+    box-shadow:0 0 10px rgba(0, 255, 255, 0.784);
+}
+
+.price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #28a745;
+}
+
+.modal-header {
+    background-color: #007bff;
+    color: white;
+}
