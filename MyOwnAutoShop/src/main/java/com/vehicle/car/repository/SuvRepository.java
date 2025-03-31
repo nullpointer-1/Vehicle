@@ -9,3 +9,4 @@ import com.vehicle.car.model.SUV;
 public interface SuvRepository extends JpaRepository<SUV, Long> {
     List<SUV> findByIs4wd(boolean is4wd);
     }
+    

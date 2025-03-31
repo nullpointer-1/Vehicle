@@ -3,14 +3,21 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Auto Marketplace</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxury Car Dealership | Null Pointers</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
     <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="team-name">Null Pointers</div>
+        </div>
+    </nav>
     <div class="container mt-4">
-        <h1 class="text-center">Auto Marketplace</h1>
+        <h1 class="text-center">Vehicle Collection</h1>
 
         <div th:if="${success}" class="alert alert-success" role="alert">
             <span th:text="${success}"></span>
@@ -112,19 +119,39 @@
             </div>
         </div>
 
+
+        <!-- <div class="car-section">
+            <div id="sedans-list" class="car-list"></div>
+            <div id="suvs-list" class="car-list"></div>
+        </div> -->
         <div class="row">
             <div th:each="car : ${cars}" class="col-md-4">
                 <div class="card">
+                    <!-- <img th:src="@{/images/{image}(image=${car.image})}" alt="Car Image" class="car-image"> -->
                     <div class="card-body">
-                        <h5 class="card-title" th:text="${car.color + ' ' + car.model}"></h5>
-                        <p class="card-text" th:text="${car.getDescription()}"></p>
-                        <span class="badge bg-success" th:if="${car instanceof T(com.vehicle.car.model.SUV)}">SUV</span>
-                        <span class="badge bg-primary" th:if="${car instanceof T(com.vehicle.car.model.Sedan)}">Sedan</span>
-                        <p class="price" th:text="'₹' + ${car.getRegularPrice()}"></p>
+                        <h3 class="card-title">
+                            
+                             <strong th:text="${car.model}"></strong>
+                        </h3>
+                    
+                        <p class="card-text">
+                            📝 <strong>Description:</strong> <span th:text="${car.getDescription()}"></span><br>
+                                <span>🎨 Color:</span> <strong th:text="${car.color}"></strong> 
+                        </p>
+                    
+                        <!-- Price Tag -->
+                        <p class="price">
+                            💰 <strong>Price:</strong> ₹<span th:text="${car.getSalePrice()}"></span><br>
+                                <span class="old-price">🔻 <strong>Old Price:</strong> ₹<span th:text="${car.getRegularPrice()}"></span></span>
+                        </p>
+                    
+                        
                     </div>
+                    
                 </div>
             </div>
         </div>
+
     </div>
 
     <script src="/script.js"></script>

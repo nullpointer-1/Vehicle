@@ -47,7 +47,7 @@ public void setIs4wd(boolean is4wd) {
 @Override
 public double getSalePrice() {
 double discount = (weight > 2000) ? 0.10 : 0.20;
-return getRegularPrice() * (1 - discount);
+return getRegularPrice() - (getRegularPrice() * discount);
 }
 
 @Override

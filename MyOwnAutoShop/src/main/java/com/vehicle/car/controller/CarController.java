@@ -1,11 +1,13 @@
 package com.vehicle.car.controller;
 
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.vehicle.car.model.Car;
 import com.vehicle.car.model.SUV;
 import com.vehicle.car.model.Sedan;
@@ -49,7 +51,7 @@ public class CarController {
                 car = sedan;
             } else {
                 redirectAttributes.addFlashAttribute("error", "Invalid car type selected!");
-                return "redirect:/";
+                return "redirect:/marketplace";
             }
 
             carService.saveCar(car);
@@ -59,12 +61,12 @@ public class CarController {
             redirectAttributes.addFlashAttribute("error", "Failed to add car. Please try again.");
         }
 
-        return "redirect:/"; // Redirect to home page after adding car
+        return "redirect:/marketplace"; // Redirect to the marketplace page with success/error messages
     }
 
-    @GetMapping("/")
+    @GetMapping("/marketplace")
     public String showMarketplace(Model model) {
         model.addAttribute("cars", carService.getAllCars());
-        return "marketplace"; // This should match your HTML filename: marketplace.html
+        return "marketplace";
     }
 }
