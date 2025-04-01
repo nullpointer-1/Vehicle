@@ -35,4 +35,18 @@ public class MarketPlaceController {
         model.addAttribute("title", "Sedans");
         return "marketplace";
     }
+
+    @GetMapping("/hatchbacks")
+    public String showHatchbacks(Model model) {
+        model.addAttribute("cars", carService.getAllHatchbacks());
+        model.addAttribute("title", "Hatchbacks");
+        return "marketplace";
+    }
+
+    @GetMapping("/coupes")
+    public String showCoupes(Model model) {
+        model.addAttribute("cars", carService.getAllCoupes());
+        model.addAttribute("title", "Coupes");
+        return "marketplace";
+    }
 }
