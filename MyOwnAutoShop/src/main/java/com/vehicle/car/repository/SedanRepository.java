@@ -8,4 +8,4 @@ import com.vehicle.car.model.Sedan;
 
 public interface SedanRepository extends JpaRepository<Sedan, Long> {
     List<Sedan> findByYear(int year);
-    }
+}

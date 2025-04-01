@@ -1,163 +1,203 @@
 document.addEventListener('DOMContentLoaded', function () {
-    let carTypeSelect = document.querySelector('select[name="type"]');
-    let suvFields = document.getElementById('suvFields');
-    let sedanFields = document.getElementById('sedanFields');
+    // DOM Elements
+    const alertContainer = document.getElementById('alertContainer');
+    const vehiclesGrid = document.getElementById('vehiclesGrid');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const emptyState = document.getElementById('emptyState');
+    const vehicleForm = document.getElementById('vehicleForm');
+    const typeSelect = document.querySelector('select[name="type"]');
+    const suvFields = document.getElementById('suvFields');
+    const sedanFields = document.getElementById('sedanFields');
+    const hatchbackFields = document.getElementById('hatchbackFields');
+    const coupeFields = document.getElementById('coupeFields');
+    const filterButtons = document.querySelectorAll('.filter-btn');
 
-    carTypeSelect.addEventListener('change', function () {
-        let selectedType = this.value;
-        suvFields.style.display = selectedType === 'SUV' ? 'block' : 'none';
-        sedanFields.style.display = selectedType === 'Sedan' ? 'block' : 'none';
-    });
+    // API Configuration
+    const API_BASE = '/api/cars';
+    let currentFilter = 'all';
 
-    document.getElementById('addCarForm').addEventListener('submit', function (event) {
-        let carType = carTypeSelect.value;
+    // Initialize
+    setupEventListeners();
+    loadVehicles(currentFilter);
 
-        if (!carType) {
-            alert("Please select a car type");
-            event.preventDefault();
-            return;
-        }
+    // Event Listeners Setup
+    function setupEventListeners() {
+        // Vehicle Type Toggle
+        typeSelect.addEventListener('change', function () {
+            const type = this.value;
+            suvFields.classList.toggle('d-none', type !== 'SUV');
+            sedanFields.classList.toggle('d-none', type !== 'Sedan');
+            hatchbackFields.classList.toggle('d-none', type !== 'Hatchback');
+            coupeFields.classList.toggle('d-none', type !== 'Coupe');
+        });
 
-        this.submit();
-    });
-});
+        // Filter Buttons
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                currentFilter = this.dataset.filter;
+                loadVehicles(currentFilter);
+            });
+        });
 
-document.addEventListener('DOMContentLoaded', () => {
-    setupCategoryButtons();
-    setupFormListeners();
-});
-
-function setupCategoryButtons() {
-    const sedanButton = document.getElementById('sedan-btn');
-    const suvButton = document.getElementById('suv-btn');
-    const sedansList = document.getElementById('sedans-list');
-    const suvsList = document.getElementById('suvs-list');
-
-    // Initially fetch and show sedans
-    fetchAndDisplayCars('sedans', true);
-    sedanButton.classList.add('active');
-    sedansList.classList.add('active');
-
-    sedanButton.addEventListener('click', () => {
-        sedanButton.classList.add('active');
-        suvButton.classList.remove('active');
-        sedansList.classList.add('active');
-        suvsList.classList.remove('active');
-        fetchAndDisplayCars('sedans', true);
-    });
-
-    suvButton.addEventListener('click', () => {
-        suvButton.classList.add('active');
-        sedanButton.classList.remove('active');
-        suvsList.classList.add('active');
-        sedansList.classList.remove('active');
-        fetchAndDisplayCars('suvs', false);
-    });
-}
-
-async function fetchAndDisplayCars(type, isSedan) {
-    const container = document.getElementById(`${type}-list`);
-    
-    // Show loading animation
-    container.innerHTML = `<div class="loading-spinner"></div>`;
-
-    try {
-        const response = await fetch(`http://localhost:8090/api/cars/${type}`);
-        const cars = await response.json();
-        
-        // Small delay for effect (optional)
-        setTimeout(() => displayCars(`${type}-list`, cars, isSedan), 500);
-    } catch (error) {
-        console.error(`Error fetching ${type}:`, error);
-        container.innerHTML = `<p class="error-message">Failed to load ${type}.</p>`;
-    }
-}
-
-
-function getCarImage(isSedan, color) {
-    const type = isSedan ? 'sedan' : 'suv';
-    const brandNames = isSedan ? 
-        ['bmw,sedan', 'mercedes,sedan', 'audi,sedan'] : 
-        ['range-rover,suv', 'bmw,suv', 'mercedes,suv'];
-    const randomBrand = brandNames[Math.floor(Math.random() * brandNames.length)];
-    return `https://source.unsplash.com/featured/800x600/?${randomBrand},${color}`;
-}
-
-function formatCurrency(amount) {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-    }).format(amount);
-}
-
-
-
-
-function setupFormListeners() {
-    const forms = {
-        sedan: document.getElementById('sedan-form'),
-        suv: document.getElementById('suv-form')
-    };
-
-    Object.entries(forms).forEach(([type, form]) => {
-        form.addEventListener('submit', async (e) => {
+        // Form Submission
+        vehicleForm.addEventListener('submit', async function (e) {
             e.preventDefault();
-            const formData = new FormData(e.target);
+            const formData = new FormData(this);
             const data = Object.fromEntries(formData.entries());
-            
+
             try {
-                const response = await fetch(`http://localhost:8090/api/cars/${type}s`, {
+                showLoading(true);
+                const response = await fetch(`${API_BASE}/add`, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                    body: JSON.stringify(data)
+                    body: new URLSearchParams(data)
                 });
 
-                if (!response.ok) {
-                    throw new Error('Failed to add car');
-                }
+                if (!response.ok) throw new Error('Failed to add vehicle');
 
-                // Refresh the current active category
-                const isSedan = type === 'sedan';
-                await fetchAndDisplayCars(`${type}s`, isSedan);
-                e.target.reset();
-                
-                // Show success message
-                const successMsg = document.createElement('div');
-                successMsg.textContent = 'Car added successfully!';
-                successMsg.style.cssText = `
-                    background: #4CAF50;
-                    color: white;
-                    padding: 10px;
-                    border-radius: 5px;
-                    margin-top: 10px;
-                    text-align: center;
-                `;
-                form.appendChild(successMsg);
-                setTimeout(() => successMsg.remove(), 3000);
-                
+                showAlert('Vehicle added successfully!', 'success');
+                $('#addCarModal').modal('hide');
+                this.reset();
+                loadVehicles(currentFilter);
             } catch (error) {
-                console.error(`Error adding ${type}:`, error);
-                
-                // Show error message
-                const errorMsg = document.createElement('div');
-                errorMsg.textContent = 'Failed to add car. Please try again.';
-                errorMsg.style.cssText = `
-                    background: #f44336;
-                    color: white;
-                    padding: 10px;
-                    border-radius: 5px;
-                    margin-top: 10px;
-                    text-align: center;
-                `;
-                form.appendChild(errorMsg);
-                setTimeout(() => errorMsg.remove(), 3000);
+                showAlert(error.message, 'danger');
+            } finally {
+                showLoading(false);
             }
         });
-    });
-}
+    }
+
+    // Load Vehicles
+    async function loadVehicles(filter = 'all') {
+        try {
+            showLoading(true);
+            clearGrid();
+
+            const endpoint = filter === 'all' ? API_BASE : `${API_BASE}/${filter}`;
+            const response = await fetch(endpoint);
+
+            if (!response.ok) throw new Error('Failed to load vehicles');
+
+            const vehicles = await response.json();
+            renderVehicles(vehicles);
+
+            emptyState.classList.toggle('d-none', vehicles.length > 0);
+        } catch (error) {
+            showAlert(error.message, 'danger');
+        } finally {
+            showLoading(false);
+        }
+    }
+
+    // Render Vehicles
+    function renderVehicles(vehicles) {
+        vehiclesGrid.innerHTML = vehicles.map(vehicle => {
+            const vehicleType = getVehicleType(vehicle);
+            const badgeColor = getBadgeColor(vehicleType);
+            const features = getVehicleFeatures(vehicle, vehicleType);
+
+            // SAFE PRICE HANDLING - UPDATED
+            const salePrice = vehicle.salePrice !== undefined ?
+                vehicle.salePrice.toFixed(2) :
+                vehicle.regularPrice.toFixed(2);
+
+            const regularPrice = vehicle.regularPrice !== undefined ?
+                vehicle.regularPrice.toFixed(2) :
+                '0.00';
+
+            return `
+                <div class="col">
+                    <div class="vehicle-card card h-100">
+                        <span class="type-badge ${badgeColor}">${vehicleType}</span>
+                        <img src="${getVehicleImage(vehicle, vehicleType)}" class="card-img-top" alt="${vehicle.model}">
+                        <div class="card-body">
+                            <h5 class="card-title">${vehicle.model}</h5>
+                            <p class="card-text text-muted">
+                                <i class="fas fa-palette me-1"></i>${vehicle.color}
+                                <i class="fas fa-tachometer-alt ms-3 me-1"></i>${vehicle.speed} km/h
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div>
+                                    <span class="price-tag">₹${salePrice}</span>
+                                    <span class="original-price ms-2">₹${regularPrice}</span>
+                                </div>
+                                <div>${features}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
 
 
+    // Helper Functions
+    function showLoading(show) {
+        loadingIndicator.style.display = show ? 'flex' : 'none';
+        vehiclesGrid.style.display = show ? 'none' : 'grid';
+    }
+
+    function clearGrid() {
+        vehiclesGrid.innerHTML = '';
+    }
+
+    function showAlert(message, type) {
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type} alert-dismissible fade show mb-4`;
+        alert.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        alertContainer.innerHTML = '';
+        alertContainer.prepend(alert);
+
+        setTimeout(() => {
+            alert.classList.remove('show');
+            setTimeout(() => alert.remove(), 150);
+        }, 5000);
+    }
+
+    function getVehicleType(vehicle) {
+        if (vehicle.weight !== undefined) return 'SUV';
+        if (vehicle.year !== undefined) return 'Sedan';
+        if (vehicle.bootspace !== undefined) return 'Hatchback';
+        if (vehicle.seatCount !== undefined) return 'Coupe';
+        return 'Vehicle';
+    }
+
+    function getBadgeColor(vehicleType) {
+        const colors = {
+            'SUV': 'bg-primary',
+            'Sedan': 'bg-success',
+            'Hatchback': 'bg-warning',
+            'Coupe': 'bg-danger'
+        };
+        return colors[vehicleType] || 'bg-secondary';
+    }
+
+    function getVehicleFeatures(vehicle, type) {
+        switch (type) {
+            case 'SUV':
+                return `<span class="badge bg-secondary me-1">${vehicle.weight}kg</span>`;
+            case 'Sedan':
+                return `<span class="badge bg-secondary me-1">${vehicle.year || 'N/A'}</span>`;
+            case 'Hatchback':
+                return `<span class="badge bg-secondary me-1">${vehicle.bootspace}L</span>`;
+            case 'Coupe':
+                return `<span class="badge bg-secondary me-1">${vehicle.seatCount} seats</span>`;
+            default:
+                return '';
+        }
+    }
+
+    function getVehicleImage(vehicle, type) {
+        const colors = ['red', 'blue', 'black', 'white', 'gray', 'silver'];
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        const color = vehicle.color || randomColor;
+        return `https://source.unsplash.com/random/600x400/?${type.toLowerCase()},car,${color}`;
+    }
+});

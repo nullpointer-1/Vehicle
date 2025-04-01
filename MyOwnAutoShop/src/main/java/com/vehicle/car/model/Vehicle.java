@@ -1,6 +1,7 @@
 package com.vehicle.car.model;
 
 public interface Vehicle {
-double getSalePrice();
-String getDescription();
+    double getSalePrice();
+
+    String getDescription();
 }

@@ -14,9 +14,8 @@ public class MyOwnAutoShop {
     private CarService carService;
 
     public void processUserData() {
-        List<Car> allCars = carService.getAllCars(); 
+        List<Car> allCars = carService.getAllCars();
         CarProcessor processor = new CarProcessor();
         processor.processCars(allCars);
     }
 }
-
