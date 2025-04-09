@@ -1,19 +1,17 @@
 package com.vehicle.car.model;
 
 import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-import jakarta.persistence.Table;
-import jakarta.persistence.DiscriminatorType;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
-@Table(name = "cars")
 public abstract class Car implements Vehicle {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,8 +24,9 @@ public abstract class Car implements Vehicle {
     private int mileage;
     private String fuelType;
     private String transmission;
-
+   
     public abstract double getSalePrice();
+
 
     public Car() {
 
