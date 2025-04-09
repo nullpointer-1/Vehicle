@@ -1,24 +1,27 @@
 package com.vehicle.car.model;
 
 import jakarta.persistence.Entity;
+
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "suvs")
+//@Table(name = "suvs")
 @PrimaryKeyJoinColumn(name = "car_id")
 public class SUV extends Car {
     private int weight;
     private boolean hasThirdRowSeat;
     private boolean is4wd;
-
+    
+    
     // public SUV(int weight, boolean hasThirdRowSeat, boolean is4wd) {
     // this.weight = weight;
     // this.hasThirdRowSeat = hasThirdRowSeat;
     // this.is4wd = is4wd;
     // }
 
-    public int getWeight() {
+   
+	public int getWeight() {
         return weight;
     }
 
