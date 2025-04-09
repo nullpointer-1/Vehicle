@@ -5,7 +5,7 @@ import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "hatchbacks")
+//@Table(name = "hatchbacks")
 @PrimaryKeyJoinColumn(name = "car_id")
 public class Hatchback extends Car {
     private double bootspace;
