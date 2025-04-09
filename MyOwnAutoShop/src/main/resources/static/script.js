@@ -20,6 +20,9 @@ document.addEventListener('DOMContentLoaded', function () {
     setupEventListeners();
     loadVehicles(currentFilter);
 
+
+
+
     // Event Listeners Setup
     function setupEventListeners() {
         // Vehicle Type Toggle
@@ -193,11 +196,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 return '';
         }
     }
-
     function getVehicleImage(vehicle, type) {
-        const colors = ['red', 'blue', 'black', 'white', 'gray', 'silver'];
-        const randomColor = colors[Math.floor(Math.random() * colors.length)];
-        const color = vehicle.color || randomColor;
-        return `https://source.unsplash.com/random/600x400/?${type.toLowerCase()},car,${color}`;
+        const images = [
+            'sedanimg1.jfif', 'sedanimg2.jfif',
+            'hatchback1.jfif',
+            'coupeimg1.jfif', 'coupeimg2.jfif', 'coupeimg3.jfif',
+            'suvimg1.jfif', 'suvimg2.jfif', 'suvimg3.jfif'
+        ];
+       
+        // Filter images based on the type
+        const filteredImages = images.filter(image => image.toLowerCase().includes(type.toLowerCase()));
+    
+        if (filteredImages.length === 0) {
+            console.error('No images found for the specified type');
+            return '';
+        }
+    
+        const randomImage = filteredImages[Math.floor(Math.random() * filteredImages.length)];
+        return `./${randomImage}`;
     }
 });
