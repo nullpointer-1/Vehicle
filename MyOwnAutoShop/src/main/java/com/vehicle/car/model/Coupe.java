@@ -5,7 +5,7 @@ import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "coupes")
+//@Table(name = "coupes")
 @PrimaryKeyJoinColumn(name = "car_id")
 public class Coupe extends Car {
     private boolean isConvertible;
@@ -22,7 +22,7 @@ public class Coupe extends Car {
     @Override
     public double getSalePrice() {
         double premium = isConvertible ? 0.15 : 0.05;
-        return getRegularPrice() * (1 + premium);
+        return getRegularPrice() * (1 - premium);
     }
 
     @Override
